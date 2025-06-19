@@ -24,25 +24,16 @@ def index():
     return jsonify({'message' : "Welkam to Flask home!"}), 200
 
 #-----------------------------create post--------------------------
-@app.route('/posts', methods=['POST'])
-def create_post():
-    # Get the data being posted to create a post
-    data = request.get_json()
-    title = data.get('title')
-    body = data.get('body')
-    image_url = data.get('image_url')
-
-    # Check for data availability
-    if not data or not title or not body or not image_url:
-        return jsonify({'message' : 'All fields required'})
-    
-    # Create new post
-    new_post = Post(title=title, body=body, image_url=image_url)
-    db.session.add(new_post)
-    db.session.commit()
-
-    response = {'message' : 'Post created successfully', 'post' : new_post.to_dict()}
-    return jsonify(response), 200
+@app.route('/posts', methods=['GET'])
+def get_posts():
+    try:
+        posts = Post.query.all()
+        if not posts:
+            return jsonify({'message' : 'No posts found'}), 404
+        response = [post.to_dict() for post in posts]
+        return jsonify(response), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 #-----------------------------get all posts-------------------------
 @app.route('/posts', methods=['GET'])

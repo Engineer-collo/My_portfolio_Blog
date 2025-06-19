@@ -47,14 +47,11 @@ def create_post():
 #-----------------------------get all posts-------------------------
 @app.route('/posts', methods=['GET'])
 def get_posts():
-    try:
-        posts = Post.query.all()
-        if not posts:
-            return jsonify({'message' : 'No posts found'}), 404
-        response = [post.to_dict() for post in posts]
-        return jsonify(response), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    posts = Post.query.all()
+    if not posts:
+        return jsonify({'message' : 'No posts found'}), 404
+    response = [post.to_dict() for post in posts]
+    return jsonify(response), 200
 
 #-----------------------------get post by id-------------------------
 @app.route('/posts/<int:id>', methods=['GET'])
